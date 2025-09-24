@@ -12,7 +12,7 @@
     <p>This is a prototype for an Expense Tracker application.</p>
     <p>Complete Application coming soon...</p>
 
-    <form action="/add-expense" method="post">
+    <form class="add" action="/add-expense" method="post">
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required>
 
@@ -40,5 +40,29 @@
 
         <button type="submit">Add Expenses</button>
         </form>
+
+    <form class="view-all" action="/view-all-expense" method ="get">
+        <button>View All Expenses</button>
+    </form>
+
+    <form class="View" action="/view-expense" method="get">
+        <h2>View Expense by Date or Label Criteria</h2>
+        <p>Fill out the form to find the expense based on label or category.</p>
+        <label for="expenseDate">Select Date:</label>
+        <input type="date" id="expenseDate" name="expenseDate">
+
+
+        <label for="expenseOption">Select Category:</label>
+        <select id="expenseOption" name="expenseOption">
+            <option value="type">Type</option>
+            <option value="category">Category</option>
+            <option value="amount">Amount</option>
+        </select>
+        <label for="expenseValue">Enter value:</label>
+        <input type="text" id="expenseValue" name="expenseValue">
+        <button type="submit">View the Expense</button>
+    </form>
+
+    <form class>
 </body>
 </html>

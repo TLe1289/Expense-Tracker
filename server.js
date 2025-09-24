@@ -74,7 +74,43 @@ app.post('/add-expense', async (req, res) => {
 // Simple thank-you page after form submission
 app.get('/thank-you', (req, res) => {
   res.send('Thank you for submitting your expense!');
+  //Fortnite: Create a redirection to the root URL after a 5 seconds
+  //setTimeout(()=>{res.redirect('/')}, 5000); 
 });
+// Personal notes: Do not use mutliple res methods in a CRUD operation
+
+
+//The user will be able to view all expense or the entire data set within the MongoDB. 
+//They only need to click a button to confirm this action.
+app.get('/view-all-expense', async (req,res) => {
+  try{
+    const data = await Expense.find({});
+    res.send(data);
+  }
+  catch(err){
+    return res.status(500).send('Error retrieving all expenses');
+  }
+})
+
+app.get('/view-expense', async (req, res) => {
+  try{
+    //const bodyDate = req.query.expenseDate;
+    const bodyCategory = req.query.expenseOption;
+    const bodyCategoryValue = req.query.expenseValue;
+    //const data = await Expense.findOne({date:bodyDate, [bodyCategory]:bodyCategoryValue}); 
+    const data = await Expense.find({ [bodyCategory]: bodyCategoryValue });
+    if(data == null ||data.length === 0){
+      return res.status(404).send('No expense found for the given date or category.');
+    }
+    else{
+      res.send(data);
+    }
+  }
+  catch(err){
+    return res.status(500).send('Error retrieving expense by date or category.')
+  }
+})
+// Personal Notes: use "req.query" when accessing data with GET request. Use "req.body" when accessing data to send with POST request
 
 //ensure that the server has accepted the HTML form request and processed it successfully
 app.listen(3000, () => {
