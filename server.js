@@ -26,27 +26,50 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 
 
+
+/*
+THIS IS IMPORTANT: Basic Routing to root URL!!!
+When user accesses root URL, server responds with "Hello World!" message
+*/
+/* 
+app.get('/', (req, res) => {
+res.send("Hello World!");
+});
+*/
+
+//re.sendFile() method to send "HTML" file as response to client
+// We can connect the index.html file to the server
+app.get('/', (req,res) =>{
+  res.sendFile(__dirname + '/index.html');
+})
+
+
 // Use Express to post data to the database
 // "add-expense" route to handle form submissions
 app.post('/add-expense', async (req, res) => {
     // 1) New "Mongoose Model Instance" --> create a new document of "Expense" schema to be saved in the database
     // 2) "express.urlencoded middleware" req.body is object containing submitted form data. 
     //     The code pulls from req.body field and assign to newExpense model instance
-    const newExpense = new Expense({
+    try{
+      const newExpense = new Expense({
         date: req.body.date,
         type: req.body.type,
         category: req.body.category,
         amount: req.body.amount,
         description: req.body.description
-    });
-    // Save the new expense instance to the database, unless error occurs
-    newExpense.save((err) => {
-    if (err) {
+      });
+      // Save the new expense instance to the database, unless error occurs
+      await newExpense.save();
+      res.redirect('/thank-you');
+    }
+    catch(err){
       return res.status(500).send('Error saving data');
     }
-    res.redirect('/thank-you');
-  });
 });
+//Resolve and issues by using try-catch block to handle errors during database operations
+//ALso used async-await syntax to handle asynchronous operations
+
+
 
 // Simple thank-you page after form submission
 app.get('/thank-you', (req, res) => {
