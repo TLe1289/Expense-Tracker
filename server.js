@@ -1,3 +1,7 @@
+/*
+Fortnite: Users still need to be able to navigate easily through diffent CRUD operations and not have to use the click back or forwards
+buttons in bewteen the website URL. 
+*/
 //Uses mongoose to connect to a MongoDB database server
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/Expense", {
@@ -84,7 +88,7 @@ app.get('/thank-you', (req, res) => {
 //They only need to click a button to confirm this action.
 app.get('/view-all-expense', async (req,res) => {
   try{
-    const data = await Expense.find({});
+    const data = (await Expense.find({}).sort({date: 1}));//Diasplay all transaction by date in ascending order
     res.send(data);
   }
   catch(err){
@@ -92,13 +96,20 @@ app.get('/view-all-expense', async (req,res) => {
   }
 })
 
+
+
+//The user will be able to view the data based on input the transaction date or category to search within the database.
+//This is possible through "Dynamic Filtering", we used condition to only filter the search if the user HAS provide the valid inputs. 
 app.get('/view-expense', async (req, res) => {
   try{
-    //const bodyDate = req.query.expenseDate;
-    const bodyCategory = req.query.expenseOption;
-    const bodyCategoryValue = req.query.expenseValue;
-    //const data = await Expense.findOne({date:bodyDate, [bodyCategory]:bodyCategoryValue}); 
-    const data = await Expense.find({ [bodyCategory]: bodyCategoryValue });
+    newFilter = {};
+    if (req.query.expenseDate){
+       newFilter.date = req.query.expenseDate;
+    }
+    if (req.query.expenseValue){
+      newFilter[req.query.expenseOption] = req.query.expenseValue;
+    }
+    const data = await Expense.find(newFilter);
     if(data == null ||data.length === 0){
       return res.status(404).send('No expense found for the given date or category.');
     }
@@ -111,6 +122,40 @@ app.get('/view-expense', async (req, res) => {
   }
 })
 // Personal Notes: use "req.query" when accessing data with GET request. Use "req.body" when accessing data to send with POST request
+
+/*
+Personal Note: Find will always follow a structure once you include the initial paramter (left of colon), it will ALWAYS attempt to 
+find the value of the right of the colon. Instead we use if statement to include values of left colon when available. Otherwise, by
+not including it in the find() method, it will not be used as a filter
+*/
+
+
+app.post('/delete-expense', async (req,res) => {
+  try{
+    if (!req.body.checkDelete){
+      console.log('Delete confirmation checkbox not checked.');
+      res.redirect('/');
+    }
+    else{
+      const newfilter={};
+      if(req.body.deleteDate){
+        newfilter.date = req.body.deleteDate;
+      }
+      if(req.body.deleteValue){
+        newfilter[req.body.deleteOption] = req.body.deleteValue;
+      }
+      const result = await Expense.deleteOne(newfilter);
+      if(result.deletedCount === 0){
+        return res.status(404).send('No matching expense found to delete.');
+      }
+      res.redirect('/thank-you');
+    }
+  }
+  catch(err){
+    return res.status(500).send('System Error: Action deleting a transaction.')
+  }
+})
+
 
 //ensure that the server has accepted the HTML form request and processed it successfully
 app.listen(3000, () => {

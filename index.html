@@ -13,6 +13,9 @@
     <p>Complete Application coming soon...</p>
 
     <form class="add" action="/add-expense" method="post">
+
+        <h2>Add a new Transaction</h2>
+        <p>Fill out the form below to add a new income or expense transaction.</p>
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required>
 
@@ -42,27 +45,46 @@
         </form>
 
     <form class="view-all" action="/view-all-expense" method ="get">
+        <h2>View Entire Expense History</h2>
+        <label for="viewAll">Click the button to view all expenses:</label>
         <button>View All Expenses</button>
     </form>
 
     <form class="View" action="/view-expense" method="get">
-        <h2>View Expense by Date or Label Criteria</h2>
+        <h2>Search for a transaction detail based on a Date or Label Criteria</h2>
         <p>Fill out the form to find the expense based on label or category.</p>
         <label for="expenseDate">Select Date:</label>
         <input type="date" id="expenseDate" name="expenseDate">
 
-
         <label for="expenseOption">Select Category:</label>
         <select id="expenseOption" name="expenseOption">
             <option value="type">Type</option>
-            <option value="category">Category</option>
+            <option value="category" selected>Category</option>
             <option value="amount">Amount</option>
         </select>
-        <label for="expenseValue">Enter value:</label>
+        <label for="expenseValue">Enter Detail:</label>
         <input type="text" id="expenseValue" name="expenseValue">
         <button type="submit">View the Expense</button>
     </form>
 
-    <form class>
+    <form class="Delete" action="delete-expense" method="post">
+        <h2>Remove a Certain Transaction History</h2>
+        <p> Fill out the form to delete the expense based on label or category.</p>
+        <label for="deleteDate">Select Date:</label>
+        <input type="date" id="deleteDate" name="deleteDate">
+
+        <label for="deleteOption">Select Category:</label>
+        <select id ="deleteOption" name="deleteOption">
+            <option value="type">Type</option>
+            <option value="category" selected>Category</option>
+            <option value="amount">Amount</option>
+        </select>
+        <label for="deleteValue">Enter Detail:</label>
+        <input type="text" id="deleteValue" name="deleteValue"><br>
+
+        <label for="checkDelete">Check the box if you want to gurantee deleting this transaction. This action is irreversible.</label>
+        <input type="checkbox" id="checkDelete" name="checkDelete" value="false">
+        <button type="submit">Delete the Expense</button>
+    </form>
 </body>
 </html>
