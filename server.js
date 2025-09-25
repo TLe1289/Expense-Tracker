@@ -137,14 +137,14 @@ app.post('/delete-expense', async (req,res) => {
       res.redirect('/');
     }
     else{
-      const newfilter={};
-      if(req.body.deleteDate){
-        newfilter.date = req.body.deleteDate;
-      }
-      if(req.body.deleteValue){
-        newfilter[req.body.deleteOption] = req.body.deleteValue;
-      }
-      const result = await Expense.deleteOne(newfilter);
+      const deleteFilter={
+        date: req.body.deleteDate,
+        type: req.body.deleteType,
+        category: req.body.deleteCategory,
+        amount: req.body.deleteAmount
+      };
+      
+      const result = await Expense.deleteOne(deleteFilter);
       if(result.deletedCount === 0){
         return res.status(404).send('No matching expense found to delete.');
       }
